@@ -1,5 +1,4 @@
 import { createClient } from "@/supabase/client/server";
-import { getUser } from "@/utils/supabase/queries/cached-queries";
 import {
   DEFAULT_SERVER_ERROR_MESSAGE,
   createSafeActionClient,
@@ -33,16 +32,10 @@ export const actionWithMeta = createSafeActionClient({
 });
 
 export const authAction = actionWithMeta.use(async ({ next, metadata }) => {
-  const user = await getUser();
   const supabase = createClient();
-
-  if (!user?.data) {
-    throw new ActionError("Unauthorized");
-  }
 
   return next({
     ctx: {
-      user: user.data,
       supabase,
     },
   });
